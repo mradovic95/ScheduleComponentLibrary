@@ -22,43 +22,48 @@ List if features:
 Import schedule in JSON format example:
 
 ```
-        SheduleImportExportJsonImplementation sheduleImportExportJsonImplementation = new SheduleImportExportJsonImplementation();
+ScheduleImportExportJson scheduleImportExportJsonImplementation = new SheduleImportExportJsonImplementation();
+        EventService eventService = new EventServiceImpl();
+        ScheduleService scheduleService = new ScheduleServiceImpl(scheduleImportExportJsonImplementation, eventService);
 
-		try {
-			Schedule schedule=sheduleImportExportJsonImplementation.importShedule(new File("Proba.json"));
-			System.out.println(schedule);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+        try {
+            Schedule schedule = scheduleService.loadSchedule(new File("Proba.json"));
+            scheduleService.checkSchedule(schedule);
+            System.out.println(schedule.getTitle());
+            schedule.getEvents().forEach(event -> System.out.println(event.getTitle()));
+        } catch (IOException | InvalidScheduleException e) {
+            e.printStackTrace();
+        }
 ```
 
 Export schedule to JSON format:
 
 ```
-        Schedule schedule = new Schedule();
+Schedule schedule = new Schedule();
+        schedule.setTitle("Simple schedule");
         EventFactory eventFactory = new EventFactory();
-		Event workEvent1 = eventFactory.getEvent("Fun Event");
+        Event workEvent1 = eventFactory.getEvent("FunEvent");
         workEvent1.setStartActivity(LocalDateTime.of(2018, 1, 12, 12, 25));
         workEvent1.setEndActivity(LocalDateTime.of(2018, 1, 20, 12, 25));
-        workEvent1.setTitle("event11111");
-		schedule.add(workEvent1);
+        workEvent1.setTitle("fun event");
+        schedule.add(workEvent1);
 
-		Event workEvent2 = eventFactory.getEvent("Work Event");
+        Event workEvent2 = eventFactory.getEvent("WorkEvent");
         workEvent2.setStartActivity(LocalDateTime.of(2018, 1, 13, 12, 25));
         workEvent2.setEndActivity(LocalDateTime.of(2018, 1, 25, 12, 25));
-        workEvent2.setTitle("event22222222");
-		schedule.add(workEvent2);
+        workEvent2.setTitle("work event");
+        schedule.add(workEvent2);
 
-        SheduleImportExportJsonImplementation sheduleImportExportJsonImplementation = new SheduleImportExportJsonImplementation();
+        ScheduleImportExportJson scheduleImportExportJsonImplementation = new SheduleImportExportJsonImplementation();
+        EventService eventService = new EventServiceImpl();
+        ScheduleService scheduleService = new ScheduleServiceImpl(scheduleImportExportJsonImplementation, eventService);
 
-		try {
-            sheduleImportExportJsonImplementation.exportShedule(new File("Proba.json"), schedule);
-		} catch (InvalidSheduleExcepiton | IOException e) {
-			e.printStackTrace();
-		}
-
+        try {
+            scheduleService.checkSchedule(schedule);
+            scheduleService.saveSchedule(new File("Proba.json"), schedule);
+        } catch (IOException | InvalidScheduleException e) {
+            e.printStackTrace();
+        }
 ```
 
 ## Authors
