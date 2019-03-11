@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<project name="Scheduling component" basedir="." default="export library">
+	<!-- Set properties -->
+	<property name="src" location="src" />
+	<property name="build" location="bin" />
+	<property name="dist" location="dist" />
+	<property name="doc" location="doc" />
+	<property name="lib" location="lib" />
+
+	<path id="classpath">
+		<fileset dir="${lib}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="clean" description="clean project before start build">
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+	</target>
+
+	<target name="init" description="prepare project for build" depends="clean">
+		<mkdir dir="${build}" />
+		<mkdir dir="${dist}" />
+	</target>
+
+	<target name="compile" description="compile" depends="init">
+		<javac srcdir="${src}" destdir="${build}">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<!-- export library as jar file -->
+	<target name="export library" description="export library as jar file" depends="compile">
+		<jar destfile="${dist}/lib/ShedulingComponent.jar">
+			<fileset dir="${build}" />
+			<!-- includes all dependencies in jar file -->
+			<restrict>
+				<name name="**/*.class" />
+				<archives>
+					<zips>
+						<fileset dir="${lib}" includes="**/*.jar" />
+					</zips>
+				</archives>
+			</restrict>
+		</jar>
+	</target>
+
+	<target name="doc" description="generate documentation">
+		<!-- clean old doc if exist -->
+		<delete dir="${doc}" />
+		<!-- create documentation folder -->
+		<mkdir dir="${doc}" />
+		<!-- generate documentation -->
+		<javadoc sourcepath="${src}" destdir="${doc}">
+	    	<classpath refid="classpath"/>
+		</javadoc>
+	</target>
+
+</project>
