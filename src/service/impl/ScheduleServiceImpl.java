@@ -1,7 +1,7 @@
 package service.impl;
 
 import exceptions.InvalidScheduleException;
-import importexport.ScheduleImportExportJson;
+import importexport.ScheduleImportExport;
 import model.Background;
 import model.Event;
 import model.Schedule;
@@ -14,11 +14,11 @@ import java.util.List;
 
 public class ScheduleServiceImpl implements ScheduleService {
 
-    private final ScheduleImportExportJson scheduleImportExportJSON;
+    private final ScheduleImportExport<File> scheduleImportExport;
     private final EventService eventService;
 
-    public ScheduleServiceImpl(ScheduleImportExportJson scheduleImportExportJSON, EventService eventService) {
-        this.scheduleImportExportJSON = scheduleImportExportJSON;
+    public ScheduleServiceImpl(ScheduleImportExport<File> scheduleImportExport, EventService eventService) {
+        this.scheduleImportExport = scheduleImportExport;
         this.eventService = eventService;
     }
 
@@ -42,12 +42,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Schedule loadSchedule(File file) throws IOException {
-        return scheduleImportExportJSON.importSchedule(file);
+        return scheduleImportExport.importSchedule(file);
     }
 
     @Override
     public void saveSchedule(File file, Schedule schedule) throws IOException {
-        scheduleImportExportJSON.exportSchedule(file, schedule);
+        scheduleImportExport.exportSchedule(file, schedule);
     }
 
 }
